@@ -12,7 +12,7 @@ private:
 public:
 	Sphere(const Point3& center, double radius) : center(center), radius(std::fmax(0,radius)) {}
 
-	bool hit(const Ray& r, double ray_tmin, double ray_tmax, HitRecord& rec) const override
+	bool hit(const Ray& r, Interval ray_t, HitRecord& rec) const override
 	{
         Vec3 oc = center - r.origin();
         auto a = r.direction().length_squared();
@@ -28,10 +28,10 @@ public:
         auto sqrd = std::sqrt(discriminant);
 
         auto root = (h - sqrd) / a;
-        if (root <= ray_tmin || ray_tmax <= root)
+        if (!ray_t.surrounds(root))
         {
             root = (h + sqrd) / a;
-            if (root <= ray_tmin || ray_tmax <= root)
+            if (!ray_t.surrounds(root))
             {
                 return false;
             }
