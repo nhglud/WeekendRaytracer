@@ -41,5 +41,8 @@
     <ClInclude Include="rtweekend.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="interval.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
