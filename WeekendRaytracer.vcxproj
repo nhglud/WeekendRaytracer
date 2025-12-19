@@ -128,7 +128,9 @@
   <ItemGroup>
     <ClInclude Include="color.hpp" />
     <ClInclude Include="hittable.hpp" />
+    <ClInclude Include="hit_list.hpp" />
     <ClInclude Include="ray.hpp" />
+    <ClInclude Include="rtweekend.hpp" />
     <ClInclude Include="sphere.hpp" />
     <ClInclude Include="vec3.hpp" />
   </ItemGroup>

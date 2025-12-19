@@ -1,43 +1,64 @@
 
-#include "color.hpp"
-#include "vec3.hpp"
-#include "ray.hpp"
 
-#include <iostream>
+#include "rtweekend.hpp"
+//#include "color.hpp"
+//#include "vec3.hpp"
+//#include "ray.hpp"
+#include "hittable.hpp"
+#include "hit_list.hpp"
+#include "sphere.hpp"
 
 
-double hit_sphere(const Point3& center, double radius, const Ray& r)
+//#include <iostream>
+
+
+//double hit_sphere(const Point3& center, double radius, const Ray& r)
+//{
+//    Vec3 oc = center - r.origin();
+//    auto a = r.direction().length_squared();
+//    auto h = dot(r.direction(), oc);
+//    auto c = dot(oc, oc) - radius * radius;
+//    auto discriminant = h * h -  a * c;
+//
+//    if (discriminant < 0)
+//    {
+//        return -1.0;
+//    }
+//    
+//    return (h + std::sqrt(discriminant)) / a;
+//
+//}
+
+
+//Color ray_color(const Ray& r)
+//{
+//    auto t = hit_sphere(Point3(0, 0, -1), 0.5, r);
+//    if (t > 0.0)
+//    {
+//        Vec3 N = unit_vector(r.at(t) - Vec3(0, 0, -1));
+//
+//        return 0.5 * Color(N.x() + 1, N.y() + 1, N.z() + 1);
+//    }
+//
+//    Vec3 unit_direction = unit_vector(r.direction());
+//    auto a = 0.5 * (unit_direction.y() + 1.0);
+//    return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
+//}
+
+
+Color ray_color(const Ray& r, const Hittable& world)
 {
-    Vec3 oc = center - r.origin();
-    auto a = r.direction().length_squared();
-    auto h = dot(r.direction(), oc);
-    auto c = dot(oc, oc) - radius * radius;
-    auto discriminant = h * h -  a * c;
-
-    if (discriminant < 0)
+    HitRecord rec;
+    if (world.hit(r, 0, infinity, rec))
     {
-        return -1.0;
-    }
-    
-    return (h + std::sqrt(discriminant)) / a;
-
-}
-
-
-Color ray_color(const Ray& r)
-{
-    auto t = hit_sphere(Point3(0, 0, -1), 0.5, r);
-    if (t > 0.0)
-    {
-        Vec3 N = unit_vector(r.at(t) - Vec3(0, 0, -1));
-
-        return 0.5 * Color(N.x() + 1, N.y() + 1, N.z() + 1);
+        return 0.5 * (rec.normal + Color(1, 1, 1));
     }
 
-    Vec3 unit_direction = unit_vector(r.direction());
+    auto unit_direction = unit_vector(r.direction());
     auto a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
 }
+
 
 
 int main()
@@ -50,6 +71,12 @@ int main()
     
     int image_height = int(image_width / aspect_ratio);
     image_height = image_height < 1 ? 1 : image_height;
+
+    HitList world;
+
+    world.add(make_shared<Sphere>(Point3(0, 0, -1), 0.5));
+    world.add(make_shared<Sphere>(Point3(0, -100.5, -1), 100));
+    
 
     // Camera
 
@@ -78,7 +105,7 @@ int main()
             auto ray_direction = pixel_center - camera_center;
             Ray r(camera_center, ray_direction);
 
-            Color pixel_color = ray_color(r);
+            Color pixel_color = ray_color(r, world);
             write_color(std::cout, pixel_color);
         }
     }

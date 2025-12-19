@@ -1,6 +1,5 @@
 #pragma once
-#include <cmath>
-#include <iostream>
+#include "rtweekend.hpp"
 
 class Vec3
 {
