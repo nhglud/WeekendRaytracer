@@ -7,9 +7,11 @@ class Camera
 public:
 	double aspect_ratio = 1.0;  // Ratio of image width over height
 	int    image_width = 100;  // Rendered image width in pixel count
+	int samples_per_pixel = 10;
 
 private:
 	int    image_height;   // Rendered image height
+	double pixel_sample_scale;
 	Point3 center;         // Camera center
 	Point3 pixel00_loc;    // Location of pixel 0, 0
 	Vec3   pixel_delta_u;  // Offset to pixel to the right
@@ -19,6 +21,8 @@ private:
 	{
 		image_height = int(image_width / aspect_ratio);
 		image_height = (image_height < 1) ? 1 : image_height;
+
+		pixel_sample_scale = 1.0 / samples_per_pixel;
 
 		center = Point3(0, 0, 0);
 
@@ -56,13 +60,18 @@ private:
 
 	Ray get_ray(int i, int j) const
 	{
-
-
+		auto offset = sample_square();
+		auto pixel_sample = pixel00_loc
+			+ (i + offset.x()) * pixel_delta_u
+			+ (j + offset.y()) * pixel_delta_v;
+		auto ray_origin = center;
+		auto ray_direction = pixel_sample - ray_origin;
+		return Ray(ray_origin, ray_direction);
 	}
 
-	Vec3 sample_square()
+	Vec3 sample_square() const
 	{
-
+		return Vec3(random_double() - 0.5, random_double() - 0.5, 0);
 	}
 
 public:
@@ -77,12 +86,15 @@ public:
 			std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
 			for (int i = 0; i < image_width; i++)
 			{
-				auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
-				auto ray_direction = pixel_center - center;
-				Ray r(center, ray_direction);
+				Color pixel_color = Color(0, 0, 0);
 
-				Color pixel_color = ray_color(r, world);
-				write_color(std::cout, pixel_color);
+				for (int sample = 0; sample < samples_per_pixel; sample++)
+				{
+					Ray r = get_ray(i, j);
+					pixel_color += ray_color(r, world);
+				}
+
+				write_color(std::cout, pixel_sample_scale * pixel_color);
 			}
 		}
 
