@@ -54,6 +54,17 @@ private:
 		return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
 	}
 
+	Ray get_ray(int i, int j) const
+	{
+
+
+	}
+
+	Vec3 sample_square()
+	{
+
+	}
+
 public:
 	void render(const Hittable& world)
 	{
