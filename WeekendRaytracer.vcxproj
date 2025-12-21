@@ -131,6 +131,7 @@
     <ClInclude Include="hittable.hpp" />
     <ClInclude Include="hit_list.hpp" />
     <ClInclude Include="interval.hpp" />
+    <ClInclude Include="material.hpp" />
     <ClInclude Include="ray.hpp" />
     <ClInclude Include="rtweekend.hpp" />
     <ClInclude Include="sphere.hpp" />
