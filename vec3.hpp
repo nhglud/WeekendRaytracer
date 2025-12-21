@@ -70,6 +70,16 @@ public:
 		return std::sqrt(length_squared());
 	}
 
+	static Vec3 random()
+	{
+		return Vec3(random_double(), random_double(), random_double());
+	}
+
+	static Vec3 random(double min, double max)
+	{
+		return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+	}
+
 };
 
 using Point3 = Vec3;
@@ -127,4 +137,23 @@ inline Vec3 cross(const Vec3& u, const Vec3& v)
 inline Vec3 unit_vector(const Vec3& v)
 {
 	return v / v.length();
+}
+
+inline Vec3 random_unit_vector()
+{
+	while (true)
+	{
+		auto p = Vec3::random(-1, 1);
+		auto lensq = p.length_squared();
+		if (1e-160 < lensq && lensq <= 1)
+			return p / sqrt(lensq);
+	}
+}
+
+
+inline Vec3 random_on_hemisphere(const Vec3& normal)
+{
+	auto on_unit_sphere = random_unit_vector();
+	auto result = dot(normal, on_unit_sphere) > 0.0 ? on_unit_sphere : -on_unit_sphere;
+	return result;
 }

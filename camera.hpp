@@ -8,6 +8,7 @@ public:
 	double aspect_ratio = 1.0;  // Ratio of image width over height
 	int    image_width = 100;  // Rendered image width in pixel count
 	int samples_per_pixel = 10;
+	int max_depth = 10;
 
 private:
 	int    image_height;   // Rendered image height
@@ -45,12 +46,18 @@ private:
 
 	}
 
-	Color ray_color(const Ray& r, const Hittable& world)
+	Color ray_color(const Ray& r, int depth, const Hittable& world)
 	{
-		HitRecord rec;
-		if (world.hit(r, Interval(0, infinity), rec))
+		if (depth <= 0)
 		{
-			return 0.5 * (rec.normal + Color(1, 1, 1));
+			return Color(0, 0, 0);
+		}
+
+		HitRecord rec;
+		if (world.hit(r, Interval(0.001, infinity), rec))
+		{
+			auto direction = random_on_hemisphere(rec.normal);
+			return 0.5 * ray_color(Ray(rec.p, direction), depth - 1, world);
 		}
 
 		auto unit_direction = unit_vector(r.direction());
@@ -91,7 +98,7 @@ public:
 				for (int sample = 0; sample < samples_per_pixel; sample++)
 				{
 					Ray r = get_ray(i, j);
-					pixel_color += ray_color(r, world);
+					pixel_color += ray_color(r, max_depth, world);
 				}
 
 				write_color(std::cout, pixel_sample_scale * pixel_color);
