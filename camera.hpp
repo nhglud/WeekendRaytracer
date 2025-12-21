@@ -65,9 +65,6 @@ private:
 			}
 
 			return Color(0, 0, 0);
-			//auto direction = rec.normal + random_unit_vector();
-
-			//return 0.5 * ray_color(Ray(rec.p, direction), depth - 1, world);
 		}
 
 		auto unit_direction = unit_vector(r.direction());
