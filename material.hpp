@@ -55,3 +55,27 @@ public:
 	}
 
 };
+
+class Dielectric : public Material
+{
+private: 
+	double refraction_index;
+
+public:
+	Dielectric(double refractive_index) : refraction_index(refractive_index) {}
+
+	bool scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered)
+		const override
+	{
+		attenuation = Color(1, 1, 1);
+		double ri = rec.front_face ? 1.0 / refraction_index : refraction_index;
+
+		Vec3 unit_direction = unit_vector(r_in.direction());
+		Vec3 refracted = refract(unit_direction, rec.normal, ri);
+
+		scattered = Ray(rec.p, refracted);
+
+		return true;
+	}
+
+};
