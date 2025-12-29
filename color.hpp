@@ -15,8 +15,6 @@ inline void write_color(std::ostream& out, const Color& pixel_color)
     auto r = pixel_color.x();
     auto g = pixel_color.y();
     auto b = pixel_color.z();
-
-    // Translate the [0,1] component values to the byte range [0,255].
     
     r = linear_to_gamma(r);
     g = linear_to_gamma(g);
