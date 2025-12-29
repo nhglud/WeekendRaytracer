@@ -26,6 +26,11 @@ int main()
 	cam.image_width = 400;
 	cam.samples_per_pixel = 100;
 	cam.max_depth = 50;
+	cam.lookfrom = Point3(-2, 2, 1);
+	cam.lookat = Point3(0, 0, -1);
+	cam.vup = Vec3(0, 1, 0);
+	cam.vfov = 20;
+
 	cam.render(world);
 
 	return 0;
